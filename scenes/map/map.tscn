@@ -1,0 +1,75 @@
+[gd_scene load_steps=13 format=3 uid="uid://c2yupmyaulxg8"]
+
+[ext_resource type="Script" uid="uid://cmvjbvtjvpqfc" path="res://scripts/map/map.gd" id="1_m6fb1"]
+[ext_resource type="Texture2D" uid="uid://ckvx1yidjbi52" path="res://assets/GLM_tilesSynth.png" id="2_dswtv"]
+[ext_resource type="Texture2D" uid="uid://rinubrns1ac4" path="res://assets/GLM_terrain.png" id="2_iyxit"]
+[ext_resource type="Texture2D" uid="uid://cc2njdpoiwt8p" path="res://assets/GLM_tiles.png" id="2_oln54"]
+[ext_resource type="Texture2D" uid="uid://cdjeod8srk3p2" path="res://assets/GLM_overlays.png" id="4_okqbt"]
+[ext_resource type="Script" uid="uid://jtnr376tcdow" path="res://scripts/map/trail_manager.gd" id="5_ggtoc"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bilaq"]
+texture = ExtResource("2_iyxit")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qpc2k"]
+resource_name = "GLMtiles"
+texture = ExtResource("2_oln54")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3ww2a"]
+texture = ExtResource("2_dswtv")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_u1uoo"]
+sources/1 = SubResource("TileSetAtlasSource_qpc2k")
+sources/2 = SubResource("TileSetAtlasSource_3ww2a")
+sources/0 = SubResource("TileSetAtlasSource_bilaq")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_eevys"]
+resource_name = "GLMoverlays"
+texture = ExtResource("4_okqbt")
+0:0/0 = 0
+0:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ykmwe"]
+sources/0 = SubResource("TileSetAtlasSource_eevys")
+
+[node name="Map" type="Node2D"]
+script = ExtResource("1_m6fb1")
+
+[node name="BaseLayer" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_u1uoo")
+
+[node name="TileBorderLayer" type="TileMapLayer" parent="."]
+modulate = Color(1, 1, 1, 0.294118)
+tile_set = SubResource("TileSet_ykmwe")
+
+[node name="SelectionOverlayLayer" type="TileMapLayer" parent="."]
+visible = false
+
+[node name="DynamicLayer" type="TileMapLayer" parent="."]
+visible = false
+
+[node name="TrailManager" type="Node2D" parent="."]
+script = ExtResource("5_ggtoc")

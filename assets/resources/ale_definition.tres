@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ALEdefinition" load_steps=3 format=3 uid="uid://b8bkder1kf1k4"]
+
+[ext_resource type="Script" uid="uid://djkuuk1pwiutn" path="res://scripts/resources/ale_definition.gd" id="1_piarv"]
+[ext_resource type="Texture2D" uid="uid://cl2rs0mxx7de8" path="res://assets/cell.png" id="2_w0ohd"]
+
+[resource]
+script = ExtResource("1_piarv")
+seal_grid_size = 3
+core_instructions = ["INIT", "MOVE", "SENSE", "COMM", "PROC", "STORE", "EVOLVE"]
+symbol_id = 0
+symmetry_mode = 0
+mutation_rate = 0.6
+body_color = Color(0.3, 0.85, 0.9, 1)
+min_speed = 0.5
+max_speed = 2.0
+texture = ExtResource("2_w0ohd")
+size = Vector2(16, 16)

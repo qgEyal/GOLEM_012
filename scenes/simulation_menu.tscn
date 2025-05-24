@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgs7x6wr8xouo"]
+
+[ext_resource type="Script" uid="uid://bmkuggjif6hr3" path="res://scripts/UI/simulation_menu.gd" id="1_ho4dl"]
+
+[node name="SimulationMenu" type="CanvasLayer"]
+script = ExtResource("1_ho4dl")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 600.0
+offset_top = 209.0
+offset_right = 1000.0
+offset_bottom = 439.0
+pivot_offset = Vector2(200, 250)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+offset_right = 400.0
+offset_bottom = 198.0
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "GOLEM Setup"
+
+[node name="MapWidth" type="SpinBox" parent="Panel/VBoxContainer"]
+layout_mode = 2
+allow_greater = true
+prefix = "Map Width"
+
+[node name="MapHeight" type="SpinBox" parent="Panel/VBoxContainer"]
+layout_mode = 2
+allow_greater = true
+prefix = "Map Height"
+
+[node name="ALECount" type="SpinBox" parent="Panel/VBoxContainer"]
+layout_mode = 2
+min_value = 2.0
+value = 20.0
+allow_greater = true
+prefix = "ALE Count"
+
+[node name="MaxTurns" type="SpinBox" parent="Panel/VBoxContainer"]
+layout_mode = 2
+allow_greater = true
+prefix = "Number of Turns"
+
+[node name="StartButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.505923, 0.778953, 0.517663, 1)
+text = "Start Simulation"
+
+[node name="RestartButton" type="Button" parent="Panel/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.879718, 0.612171, 0, 1)
+text = "Restart"

@@ -1,0 +1,182 @@
+[gd_scene load_steps=17 format=3 uid="uid://ba5ybnkxh2cgj"]
+
+[ext_resource type="Script" uid="uid://yvcltyreu2r2" path="res://scripts/main.gd" id="1_ye3fh"]
+[ext_resource type="Script" uid="uid://cmy5v63888fd6" path="res://scripts/utlities/grid_vis.gd" id="2_fyhuy"]
+[ext_resource type="PackedScene" uid="uid://c2yupmyaulxg8" path="res://scenes/map/map.tscn" id="2_v6vlg"]
+[ext_resource type="Script" uid="uid://dre3wkn0h7jod" path="res://scripts/utlities/nav_cam.gd" id="4_be4v0"]
+[ext_resource type="Script" uid="uid://c5d4ki5yiqu3m" path="res://scripts/entities/ale_manager.gd" id="4_dlgfu"]
+[ext_resource type="PackedScene" uid="uid://8ehy3mghdoms" path="res://scenes/entities/ale.tscn" id="5_f7bku"]
+[ext_resource type="Resource" uid="uid://b8bkder1kf1k4" path="res://assets/resources/ale_definition.tres" id="6_o6syr"]
+[ext_resource type="Texture2D" uid="uid://c51tvm1b04v1n" path="res://assets/monochrome_packed.png" id="8_icbyt"]
+[ext_resource type="PackedScene" uid="uid://bgs7x6wr8xouo" path="res://scenes/simulation_menu.tscn" id="8_trceg"]
+[ext_resource type="Script" uid="uid://er2x3jcx8usu" path="res://scripts/pause_manager.gd" id="9_85g3d"]
+[ext_resource type="Script" uid="uid://h4xx0vsfguj" path="res://scripts/UI/message_log.gd" id="9_choun"]
+[ext_resource type="Script" uid="uid://c6bss4w3hm8va" path="res://scripts/UI/stats_panel.gd" id="9_eb6dy"]
+[ext_resource type="Script" uid="uid://cuigiebqwdef3" path="res://scripts/UI/stats_label.gd" id="9_ya4ey"]
+[ext_resource type="Script" uid="uid://dnca6c2ek1bx8" path="res://scripts/UI/info_log.gd" id="12_jkv2x"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dbg08"]
+atlas = ExtResource("8_icbyt")
+region = Rect2(768, 336, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ltlv8"]
+texture = SubResource("AtlasTexture_dbg08")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[node name="GOLEM" type="Node"]
+
+[node name="InterfaceRoot" type="Control" parent="."]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BackgroundFill" type="ColorRect" parent="InterfaceRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.137437, 0.194979, 0.209377, 1)
+
+[node name="MainHContainer" type="HBoxContainer" parent="InterfaceRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="MainVContainer" type="VBoxContainer" parent="InterfaceRoot/MainHContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="InterfaceRoot/MainHContainer/MainVContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SubViewport" type="SubViewport" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="Main" type="Node2D" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport"]
+script = ExtResource("1_ye3fh")
+ale_color = Color(0.209178, 0.308133, 0.974444, 1)
+trail_color = Color(0.337546, 0.675264, 0.527272, 1)
+
+[node name="Map" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/Main" instance=ExtResource("2_v6vlg")]
+
+[node name="NavCam" type="Camera2D" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/Main"]
+script = ExtResource("4_be4v0")
+
+[node name="GridVis" type="Node2D" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/Main"]
+script = ExtResource("2_fyhuy")
+line_color = Color(0.1653, 0.87, 0.37671, 0.392157)
+
+[node name="ALEManager" type="Node" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/Main"]
+script = ExtResource("4_dlgfu")
+ale_scene = ExtResource("5_f7bku")
+ale_definition = ExtResource("6_o6syr")
+
+[node name="SimulationMenu" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport" instance=ExtResource("8_trceg")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport"]
+
+[node name="PauseLabel" type="Label" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -11.5
+offset_right = 72.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "Simulation Paused"
+
+[node name="InfoBar" type="HBoxContainer" parent="InterfaceRoot/MainHContainer/MainVContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="StatsPanelContainer" type="PanelContainer" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_ltlv8")
+
+[node name="StatsPanel" type="VBoxContainer" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar/StatsPanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("9_eb6dy")
+
+[node name="StatsLabel" type="Label" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar/StatsPanelContainer/StatsPanel"]
+visible = false
+layout_mode = 2
+text = "G.O.L.E.M. Framework"
+script = ExtResource("9_ya4ey")
+
+[node name="InfoPanelContainer" type="PanelContainer" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ltlv8")
+
+[node name="InfoLog" type="ScrollContainer" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar/InfoPanelContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("12_jkv2x")
+
+[node name="InfoPanel" type="VBoxContainer" parent="InterfaceRoot/MainHContainer/MainVContainer/InfoBar/InfoPanelContainer/InfoLog"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SideBarContainer" type="VBoxContainer" parent="InterfaceRoot/MainHContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="MessagesPanel" type="PanelContainer" parent="InterfaceRoot/MainHContainer/SideBarContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_ltlv8")
+
+[node name="MessageLog" type="ScrollContainer" parent="InterfaceRoot/MainHContainer/SideBarContainer/MessagesPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("9_choun")
+
+[node name="MessageList" type="VBoxContainer" parent="InterfaceRoot/MainHContainer/SideBarContainer/MessagesPanel/MessageLog"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PauseManager" type="Node" parent="InterfaceRoot"]
+process_mode = 2
+script = ExtResource("9_85g3d")
