@@ -10,6 +10,19 @@ const DIRECTIONS : Array[Vector2i] = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT,
 @onready var main : Main
 @onready var map  : Map
 
+'''
+PHASE WORKFLOWS
+The initial ALE base-loop begins with an INIT check (run once) and then proceeds
+to SENSE -> PROC -> MOVE
+The order can change depending on situational conditions.
+The phase pipeline is driven by ALEdefinition
+'''
+var phase_pipeline: PackedStringArray
+var phase_index: int
+
+## check for INIT initialization
+var _has_initialized: bool = false
+
 # ───────────────────────────────── STATE MACHINE
 enum State { MOVING, STOPPED, COLLIDING, IDLE }
 
@@ -34,6 +47,9 @@ var enable_collision_handling : bool
 
 var seal_symbol : SEALSymbol
 var ale_id : int = -1
+
+
+
 
 ## Testing core command behavior
 
@@ -86,9 +102,19 @@ func initialize(
 	#print("ALE %d INITIALIZED at %s" % [ale_id, str(grid_pos)])
 
 	## Pick fixed test command from ALEdefinition
-	var cmds := definition.core_instructions
-	assigned_command = cmds[randi() % cmds.size()]
-	print("ALE %d initialized at: %s. Assigned command %s" % [ale_id, str(grid_pos), assigned_command])
+	var cmds := definition.core_instructions.duplicate()
+	# ensure INIT is first
+	phase_pipeline = ["INIT"]
+	for c in cmds:
+		if c != "INIT":
+			phase_pipeline.append(c)
+			print("c ", c)
+	phase_index = 0
+
+	## invoke INIT
+	_handle_init()
+	#assigned_command = cmds[randi() % cmds.size()]
+	#print("ALE %d initialized at: %s. Assigned command %s" % [ale_id, str(grid_pos), assigned_command])
 
 
 func set_definition(value : ALEdefinition) -> void:
@@ -153,10 +179,50 @@ func _process(delta : float) -> void:
 	if main.max_turns > 0 and main.current_turn >= main.max_turns:
 		return
 
-	move_timer -= delta * move_speed * main.simulation_speed
-	if move_timer <= 0:
-		move_randomly()
-		move_timer = 1.0
+	#move_timer -= delta * move_speed * main.simulation_speed
+	#if move_timer <= 0:
+		#move_randomly()
+		#move_timer = 1.0
+
+
+	## PHASES
+	if phase_index >= phase_pipeline.size():
+		# full cycle is complete (INIT + any additional commands)
+		# jump back to SENSE (index 1) for the next loop
+		phase_index = 1
+
+	var cmd := phase_pipeline[phase_index]
+	match cmd:
+		"INIT":
+			# INIT only runs once per session
+			# has been called already in initialize()
+			print("INIT phase")
+			phase_index += 1
+
+		"SENSE":
+			_handle_sense()
+			#print("SENSE phase")
+			phase_index += 1
+
+		"PROC":
+			_handle_proc()
+			#print("PROC phase")
+			phase_index += 1
+
+		"MOVE":
+			move_timer -= delta * move_speed * main.simulation_speed
+			if move_timer <= 0:
+				move_randomly()
+				move_timer = 1.0
+			# after MOVE, loop back to SENSE
+			#print("MOVE phase")
+			phase_index += 1
+
+		## IMPLEMENT REST OF CORE COMMANDS BELOW
+
+		# END matach
+		_:
+			phase_index += 1
 
 # ───────────────────────────────── MOVEMENT
 func move_randomly() -> void:
@@ -240,45 +306,37 @@ func handle_collision(_collision_pos : Vector2i) -> void:
 	SignalBus.message_sent.emit("Stopping for: %d turns\n" % stop_turns,
 								main.collision_color)
 
-	'''
-	var other := get_colliding_ale(_collision_pos)
-	if other:
-		# pick a random command from each ALE’s core_instructions
-		var cmds := definition.core_instructions
-		var cmd_self  := cmds[randi() % cmds.size()]
-		var other_cmds := other.definition.core_instructions
-		var cmd_other := other_cmds[randi() % other_cmds.size()]
-
-		var msg := "ALE %d COLLIDED with ALE %d at %s. ALE %d emits %s, ALE %d emits %s" \
-			% [ale_id, other.ale_id, str(grid_pos), ale_id, cmd_self, other.ale_id, cmd_other]
-		SignalBus.message_sent.emit(msg, main.collision_color)
-	else:
-		# fallback single-ALE collision
-		var msg := "ALE %d COLLIDED at %s" % [ale_id, str(grid_pos)]
-		SignalBus.message_sent.emit(msg, main.collision_color)
-
-	SignalBus.message_sent.emit("Stopping for: %d turns" % stop_turns,
-								main.collision_color)
-
-	'''
-
-	'''
-	var other := get_colliding_ale(_collision_pos)
-	var msg : String = ("Collision: ALE %d & ALE %d at %s" % [ale_id, other.ale_id, str(grid_pos)]
-				if other
-				else "Collision: ALE %d at %s" % [ale_id, str(grid_pos)])
-
-	SignalBus.message_sent.emit(msg, main.collision_color)
-	SignalBus.message_sent.emit("Stopping for: %d turns" % stop_turns,
-								main.collision_color)
-	'''
-
 
 func get_colliding_ale(target_pos : Vector2i) -> ALE:
 	for ale in get_parent().get_children():
 		if ale is ALE and ale != self and ale.grid_pos == target_pos:
 			return ale
 	return null
+
+
+'''
+# ──────────────────────────────────────────────────────────────────
+CORE COMMAND HANDLERS
+# ──────────────────────────────────────────────────────────────────
+'''
+func _handle_init() -> void:
+	if _has_initialized:
+		return
+	# Announce
+	print("ALE %d INIT at %s" % [ale_id, str(grid_pos)])
+	_has_initialized = true
+
+func _handle_sense() -> void:
+	# TODO: read environment
+	pass
+
+func _handle_proc() -> void:
+	# TODO: process sensed data
+	pass
+
+
+
+
 
 # ───────────────────────────────── TRAILS
 func leave_trail(prev_pos : Vector2i) -> void:

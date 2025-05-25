@@ -9,7 +9,7 @@ var _seal_grid_size : int = 3
 @export var seal_grid_size : int : set = _set_grid_size
 
 @export var core_instructions : PackedStringArray = [
-	"INIT", "MOVE", "SENSE", "COMM", "PROC", "STORE", "EVOLVE"
+	"INIT", "SENSE","PROC", "MOVE", "COMM", "STORE", "EVOLVE"
 ]
 
 @export var symbol_id      : int   = 0
