@@ -23,6 +23,13 @@ var phase_index: int
 ## check for INIT initialization
 var _has_initialized: bool = false
 
+
+## Testing core command behavior
+var terrain_id: int
+var initial_terrain_name: String
+var assigned_command: String
+
+
 # ───────────────────────────────── STATE MACHINE
 enum State { MOVING, STOPPED, COLLIDING, IDLE }
 
@@ -49,11 +56,6 @@ var seal_symbol : SEALSymbol
 var ale_id : int = -1
 
 
-
-
-## Testing core command behavior
-
-var assigned_command: String
 
 
 
@@ -293,21 +295,15 @@ func handle_collision(_collision_pos : Vector2i) -> void:
 	'''
 	var other := get_colliding_ale(_collision_pos)
 	if other:
-		var msg := "ALE %d COLLIDED with ALE %d at %s. \nALE %d emits %s, ALE %d emits %s" % [
-			ale_id,
-			other.ale_id,
-			str(grid_pos),
-			ale_id,
-			assigned_command,
-			other.ale_id,
-			other.assigned_command
-		]
+		var msg := "ALE %d collided with ALE %d" % [ale_id, other.ale_id]
+		msg += "\nALE %d initialized on terrain type %s" % [ale_id, initial_terrain_name]
+		msg += "\nALE %d initialized on terrain type %s" % [other.ale_id, other.initial_terrain_name]
+
 		SignalBus.message_sent.emit(msg, main.collision_color)
 	else:
-		var msg := "ALE %d COLLIDED at %s emitting %s" % [
+		var msg := "ALE %d COLLIDED at %s" % [
 			ale_id,
-			str(grid_pos),
-			assigned_command
+			str(grid_pos)
 		]
 		SignalBus.message_sent.emit(msg, main.collision_color)
 
@@ -332,6 +328,11 @@ func _handle_init() -> void:
 		return
 	# Announce
 	print("ALE %d INIT at %s" % [ale_id, str(grid_pos)])
+
+	# SENSE terrain at INIT (testing  <========)
+	terrain_id = map.map_data[grid_pos].terrain_type # get terrain id number
+	initial_terrain_name = map.get_terrain_name(terrain_id)
+
 	_has_initialized = true
 
 func _handle_sense() -> void:

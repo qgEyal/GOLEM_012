@@ -50,7 +50,19 @@ SINGULARITY - The highest processing nodes, reserved for advanced ALE activity
 """
 enum TerrainType { VOID, FRAGMENTED, RAW, STABLE, STRUCTURED, ENERGETIC, PRIME, SINGULARITY }
 
+const TERRAIN_TYPE_NAMES : Dictionary = {
+	TerrainType.VOID:         "VOID",
+	TerrainType.FRAGMENTED:   "FRAGMENTED",
+	TerrainType.RAW:          "RAW",
+	TerrainType.STABLE:       "STABLE",
+	TerrainType.STRUCTURED:   "STRUCTURED",
+	TerrainType.ENERGETIC:    "ENERGETIC",
+	TerrainType.PRIME:        "PRIME",
+	TerrainType.SINGULARITY:  "SINGULARITY"
+}
 
+func get_terrain_name(t: int) -> String:
+	return TERRAIN_TYPE_NAMES.get(t, "UNKNOWN")
 
 ## Use initialize
 func initialize(ww_init: int, wh_init: int, ts_init:int, main_ref: Main) -> void:
@@ -296,6 +308,7 @@ func get_random_walkable_position() -> Vector2:
 """
 UPDATE THIS FEATURE TO ACTIVELY TOGGLE TERRAIN TYPES
 """
+## TEST: change from stable to singularity
 func _input(event):
 	if event.is_action_pressed("change"):
 		toggle_terrain(TerrainType.STABLE, TerrainType.SINGULARITY)

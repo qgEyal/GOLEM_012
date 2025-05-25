@@ -7,7 +7,7 @@ G.O.L.E.M.
 Artificial Life Simulator using Semiotic Emergent ALife Language protocols
 ────────────────────────────────────────────────────────────────────────────
 '''
-const GOLEM_VERSION : String = "0.2.4.7 – ALE hybrid method"
+const GOLEM_VERSION : String = "0.2.5.0 – SEAL init"
 
 ## SUB‑VIEWPORT
 @onready var sub_viewport : SubViewport = $".."
