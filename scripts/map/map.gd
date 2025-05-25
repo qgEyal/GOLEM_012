@@ -329,4 +329,5 @@ func add_trail(grid_pos: Vector2i, ale: ALE):
 		return
 
 	var trail_color = ale.trail_color  # Use ALE's color
+	print("creating trails")
 	trail_manager.add_trail(grid_pos, trail_color,main.trail_duration, main.trail_fade)  # Add trail with a 5-second duration

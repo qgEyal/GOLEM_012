@@ -155,3 +155,7 @@ func respawn_ale(old_ale : ALE) -> void:
 
 	ales[ale.name]           = ale
 	occupancy[spawn_grid_pos] = ale
+
+func clear_ales() -> void:
+	for ale in get_children():
+		ale.queue_free()

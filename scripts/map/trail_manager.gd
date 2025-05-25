@@ -75,6 +75,12 @@ func modify_base_layer():
 		if trail_counts[grid_pos] >= 5:  # Example threshold
 			map.base_layer.set_cell(grid_pos, 0, Vector2i(2, 0))  # Change terrain type
 '''
+func clear_trails() -> void:
+	# gets called from main.gd --> reset
+	trails.clear()
+
+
+
 
 func _draw():
 	"""

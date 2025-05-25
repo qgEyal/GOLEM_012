@@ -20,8 +20,6 @@ const GOLEM_VERSION : String = "0.2.4.7 – ALE hybrid method"
 #@onready var stats_panel : StatsPanel  = $"../../../InfoBar/StatsPanelContainer/StatsPanel"
 @onready var stats_panel: StatsPanel = %StatsPanel
 
-
-
 @onready var simulation_menu : SimulationMenu = $"../SimulationMenu"
 @onready var pause_label : Label = $"../CanvasLayer/PauseLabel"
 
@@ -197,6 +195,8 @@ func _input(event) -> void:
 		#await get_tree().process_frame
 		#get_tree().reload_current_scene()
 		if SessionManager.params.size() > 0:
+			ale_manager.clear_ales() # clear existing ales from memory
+			map.trail_manager.clear_trails()
 			apply_simulation_settings(SessionManager.params)
 
 	elif event.is_action_pressed("restart"):

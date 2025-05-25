@@ -103,14 +103,13 @@ func initialize(
 
 	## Pick fixed test command from ALEdefinition
 	var cmds := definition.core_instructions.duplicate()
-	# ensure INIT is first
+	# ensure INIT is first, withouth MOVE (speed optimization)
 	phase_pipeline = ["INIT"]
 	for c in cmds:
-		if c != "INIT":
+		if c != "INIT" and c != "MOVE":
 			phase_pipeline.append(c)
-			print("c ", c)
 	phase_index = 0
-
+	## phase_pipeline holds only INIT, SENSE, PROC, COMM, STORE, EVOLVE
 	## invoke INIT
 	_handle_init()
 	#assigned_command = cmds[randi() % cmds.size()]
@@ -164,6 +163,15 @@ func _apply_definition_data() -> void:
 		push_error("Invalid texture size for ALE sprite!")
 
 # ───────────────────────────────── PROCESS LOOP
+func _physics_process(delta: float) -> void:
+	## set MOVE in it's own process
+	move_timer -= delta * move_speed * main.simulation_speed
+	if move_timer <= 0.0:
+		move_randomly()
+		move_timer = 1.0
+
+
+
 func _process(delta : float) -> void:
 	if not main or not main.simulation_active:
 		return
@@ -196,7 +204,6 @@ func _process(delta : float) -> void:
 		"INIT":
 			# INIT only runs once per session
 			# has been called already in initialize()
-			print("INIT phase")
 			phase_index += 1
 
 		"SENSE":
@@ -208,7 +215,13 @@ func _process(delta : float) -> void:
 			_handle_proc()
 			#print("PROC phase")
 			phase_index += 1
+		## IMPLEMENT REST OF CORE COMMANDS BELOW
 
+		# END match
+		_:
+			phase_index += 1
+
+	'''
 		"MOVE":
 			move_timer -= delta * move_speed * main.simulation_speed
 			if move_timer <= 0:
@@ -217,12 +230,7 @@ func _process(delta : float) -> void:
 			# after MOVE, loop back to SENSE
 			#print("MOVE phase")
 			phase_index += 1
-
-		## IMPLEMENT REST OF CORE COMMANDS BELOW
-
-		# END matach
-		_:
-			phase_index += 1
+		'''
 
 # ───────────────────────────────── MOVEMENT
 func move_randomly() -> void:
