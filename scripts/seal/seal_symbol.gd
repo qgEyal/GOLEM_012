@@ -23,6 +23,7 @@ enum MirrorType  {
 ## Lazily-updated cache of the packed 16-bit value used for RGBA encoding
 var _cached_gb : int = -1
 
+
 func _set_grid_size(v:int) -> void:
 	grid_size = clamp(v, 3, 8)
 	_cached_gb = -1
@@ -104,3 +105,22 @@ func mutate(chance:=0.1) -> void:
 	var bit  := randi_range(0, grid_size - 1)
 	pattern_bits[idx] ^= 1 << bit
 	_cached_gb = -1
+
+### ── ADD at bottom of seal_symbol.gd ────────────────────────
+
+## We reserve the two high bits of G channel for role info:
+##   bits 7‑6 -> team_id  (0‑3)
+##   bit  5   -> archetype_id (0 = first, 1 = second)
+static func create_role_symbol(mirror_id:int, grid:int, team_id:int, arch_id:int) -> SEALSymbol:
+	var s := SEALSymbol.new()
+	s.mirror_id = mirror_id
+	s.grid_size = grid
+	s.payload_r = 0   # free
+	s.payload_g = (team_id << 6) | (arch_id << 5)
+	s.payload_b = 0
+	return s
+
+static func extract_role(sym: SEALSymbol) -> Dictionary:
+	var team_id: int = int((sym.payload_g >> 6) & 0b11)
+	var arch_id: int = int((sym.payload_g >> 5) & 0b1)
+	return {"team_id": team_id, "arch_id": arch_id}

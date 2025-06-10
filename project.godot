@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 SignalBus="*res://scripts/utlities/signal_bus.gd"
 SessionManager="*res://scripts/utlities/session_manager.gd"
+InitConfig="res://scripts/config/init_config.gd"
 
 [display]
 

@@ -76,7 +76,9 @@ render_target_update_mode = 4
 
 [node name="Main" type="Node2D" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport"]
 script = ExtResource("1_ye3fh")
-ale_count = 30
+world_width = 30
+world_height = 20
+ale_count = 3
 ale_color = Color(0.209178, 0.308133, 0.974444, 1)
 trail_color = Color(0.337546, 0.675264, 0.527272, 1)
 trail_duration = 1.5

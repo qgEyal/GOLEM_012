@@ -8,7 +8,12 @@ const DIRECTIONS : Array[Vector2i] = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT,
 
 @export var definition : ALEdefinition : set = set_definition   # injected by manager
 @onready var main : Main
-@onready var map  : Map
+@onready var map : Map
+
+var assigned_team : String
+var assigned_archetype : String
+
+
 
 '''
 PHASE WORKFLOWS
@@ -54,9 +59,6 @@ var enable_collision_handling : bool
 
 var seal_symbol : SEALSymbol
 var ale_id : int = -1
-
-
-
 
 
 # ───────────────────────────────── INITIALIZATION
@@ -333,6 +335,24 @@ func _handle_init() -> void:
 	terrain_id = map.map_data[grid_pos].terrain_type # get terrain id number
 	initial_terrain_name = map.get_terrain_name(terrain_id)
 
+	# ─── Delegate role‑assignment to config module ───
+	'''
+	When using a singleton(autoload)
+	#var init_conf = preload("res://scripts/config/init_config.gd")
+	#var init_data : Dictionary = init_conf.assign_init_role()
+	'''
+
+	var init_data: Dictionary = InitConfig.assign_init_role()
+	assigned_team = init_data["team"]
+	assigned_archetype = init_data["archetype"]
+	assigned_command = init_data["command"]
+
+	# Debug
+	print("ALE %d → Team %s, Archetype %s, Command %s"
+		  % [ale_id, assigned_team, assigned_archetype, assigned_command])
+	# ─── End role‑assignment ───
+
+
 	_has_initialized = true
 
 func _handle_sense() -> void:
@@ -342,10 +362,6 @@ func _handle_sense() -> void:
 func _handle_proc() -> void:
 	# TODO: process sensed data
 	pass
-
-
-
-
 
 # ───────────────────────────────── TRAILS
 func leave_trail(prev_pos : Vector2i) -> void:
@@ -357,7 +373,4 @@ func leave_trail(prev_pos : Vector2i) -> void:
 
 	var adjusted := trail_color
 	adjusted.a = 1.0
-	map.trail_manager.add_trail(prev_pos,
-								adjusted,
-								main.trail_duration,
-								main.trail_fade)
+	map.trail_manager.add_trail(prev_pos, adjusted,	main.trail_duration, main.trail_fade)
