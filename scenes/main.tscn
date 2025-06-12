@@ -81,7 +81,7 @@ world_height = 20
 ale_count = 3
 ale_color = Color(0.209178, 0.308133, 0.974444, 1)
 trail_color = Color(0.337546, 0.675264, 0.527272, 1)
-trail_duration = 1.5
+trail_duration = 3.0
 trail_fade = 0.75
 
 [node name="Map" parent="InterfaceRoot/MainHContainer/MainVContainer/SubViewportContainer/SubViewport/Main" instance=ExtResource("2_v6vlg")]

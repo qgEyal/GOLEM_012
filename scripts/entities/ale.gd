@@ -8,9 +8,9 @@ const DIRECTIONS : Array[Vector2i] = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT,
 
 @export var definition : ALEdefinition : set = set_definition   # injected by manager
 @onready var main : Main
-@onready var map : Map
+@onready var map  : Map
 
-var assigned_team : String
+var assigned_team      : String
 var assigned_archetype : String
 
 
@@ -343,9 +343,9 @@ func _handle_init() -> void:
 	'''
 
 	var init_data: Dictionary = InitConfig.assign_init_role()
-	assigned_team = init_data["team"]
+	assigned_team      = init_data["team"]
 	assigned_archetype = init_data["archetype"]
-	assigned_command = init_data["command"]
+	assigned_command   = init_data["command"]
 
 	# Debug
 	print("ALE %d → Team %s, Archetype %s, Command %s"

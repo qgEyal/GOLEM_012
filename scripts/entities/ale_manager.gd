@@ -7,6 +7,11 @@ extends Node
 @export var ale_scene      : PackedScene     # ALE.tscn
 @export var ale_definition : ALEdefinition   # baseline .tres
 
+#const InitConfig = preload("res://scripts/config/init_config.gd")
+
+var rng := RandomNumberGenerator.new()
+
+
 # Injected from Main
 var map  : Map
 var main : Main
@@ -22,6 +27,10 @@ var enable_collision_handling := true
 
 var ales      : Dictionary = {}   # name → ALE
 var occupancy : Dictionary = {}   # Vector2i → ALE
+
+func _ready() -> void:
+	rng.randomize()
+
 
 # ───────────────────────────────── PUBLIC API
 func initialize(
