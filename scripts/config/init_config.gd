@@ -4,14 +4,10 @@
 extends Node
 class_name InitConfig
 
+
 # ─── RNG for sampling ───
 static var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 static var _seeded: bool = false
-
-static func _seed_rng() -> void:
-	if not _seeded:
-		_rng.randomize()
-		_seeded = true
 
 # ─── Roguelike role‑assignment parameters ───
 const TEAMS: PackedStringArray = ["Pathfinders", "Lorekeepers", "Heralds", "Wardens"]
@@ -37,6 +33,29 @@ const ARCHETYPE_COMMAND_BIAS: Dictionary = {
 	"Sentinel": "SENSE",
 	"Alchemist": "PROC"
 }
+
+const INIT_SYMBOLS: Dictionary = {
+	"Scout":      preload("res://assets/resources/symbols/INIT/scout.tres"),
+	"Explorer":   preload("res://assets/resources/symbols/INIT/explorer.tres"),
+	"Archivist":  preload("res://assets/resources/symbols/INIT/archivist.tres"),
+	"Scribe":     preload("res://assets/resources/symbols/INIT/scribe.tres"),
+	"Courier":    preload("res://assets/resources/symbols/INIT/courier.tres"),
+	"Glyphweaver":preload("res://assets/resources/symbols/INIT/glyphweaver.tres"),
+	"Sentinel":   preload("res://assets/resources/symbols/INIT/sentinel.tres"),
+	"Alchemist":  preload("res://assets/resources/symbols/INIT/alchemist.tres"),
+}
+
+static func _seed_rng() -> void:
+	if not _seeded:
+		_rng.randomize()
+		_seeded = true
+
+# call SEALSymbol resource
+static func get_init_symbol(archetype: String) -> SEALSymbol:
+	var sym = INIT_SYMBOLS.get(archetype)
+	if sym == null:
+		push_error("InitConfig: no INIT symbol for archetype '%s'!" % archetype)
+	return sym
 
 # ─── Choose a team by sampling Dirichlet(α) — here α=1 simplifies to Exponential(1) ───
 static func choose_team() -> String:

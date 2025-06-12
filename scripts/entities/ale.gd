@@ -346,10 +346,12 @@ func _handle_init() -> void:
 	assigned_team      = init_data["team"]
 	assigned_archetype = init_data["archetype"]
 	assigned_command   = init_data["command"]
-
+	seal_symbol = InitConfig.get_init_symbol(assigned_archetype)
 	# Debug
-	print("ALE %d → Team %s, Archetype %s, Command %s"
-		  % [ale_id, assigned_team, assigned_archetype, assigned_command])
+	#definition.init_symbol = InitConfig.get_init_symbol(assigned_archetype)
+	print("ALE %d → Team %s, Archetype %s, Command %s, Symbol %s"
+		  % [ale_id, assigned_team, assigned_archetype, assigned_command, seal_symbol])
+
 	# ─── End role‑assignment ───
 
 

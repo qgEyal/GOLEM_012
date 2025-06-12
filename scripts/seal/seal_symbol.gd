@@ -3,7 +3,7 @@
 class_name SEALSymbol
 extends Resource
 
-
+@export_category("SEAL Symbol Resource")
 ## --- Symbol specification ---------------------------------------------------
 ## Grid is always square. 3 ≤ grid_size ≤ 8.
 ## mirror_type matches the 7 mirroring modes
@@ -17,11 +17,23 @@ enum MirrorType  {
 	SPIRAL
 }
 
+# Packed bitmask for an N×N grid: lowest bit corresponds to index 0
+@export var bitmask: int
 @export var grid_size : int = 3 : set = _set_grid_size
 @export var mirror_type     : MirrorType   = MirrorType.HORIZONTAL
 @export var pattern_bits    : PackedByteArray   # raw unique-rows as bits
 ## Lazily-updated cache of the packed 16-bit value used for RGBA encoding
 var _cached_gb : int = -1
+
+func get_pattern() -> Array:
+	var mat := []
+	for y in range(grid_size):
+		var row := []
+		for x in range(grid_size):
+			var idx = y * grid_size + x
+			row.append((bitmask >> idx) & 1)
+		mat.append(row)
+	return mat
 
 
 func _set_grid_size(v:int) -> void:
@@ -89,13 +101,12 @@ func _to_string() -> String:
 		"DIAGONAL_TL_BR", "DIAGONAL_TR_BL",
 		"CROSS_DIAGONAL", "SPIRAL"
 	]
-	return "SEALSymbol(size=%d, mirror=%s, bits=%s)" % [
+	return "SEALSymbol(size=%d, mirror=%s, bitmask=%s)" % [
 		grid_size,
 		mirror_names[int(mirror_type)],
-		pattern_bits
+		#pattern_bits,
+		bitmask
 	]
-
-
 
 ## --- Mutation --------------------------------------------------------------
 func mutate(chance:=0.1) -> void:

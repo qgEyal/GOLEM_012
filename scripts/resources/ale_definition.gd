@@ -12,6 +12,7 @@ var _seal_grid_size : int = 3
 	"INIT", "SENSE","PROC", "MEM", "MOVE", "COMM", "EVOLVE"
 ]
 
+@export var init_symbol      : SEALSymbol   # assigned at INIT phase
 @export var symbol_id      : int   = 0
 @export var symmetry_mode  : int   = 0       # 0–6
 @export var mutation_rate  : float = 0.6     # demo knob

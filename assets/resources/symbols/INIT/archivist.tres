@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SEALSymbol" load_steps=2 format=3 uid="uid://ci0rsks4n2gyx"]
+
+[ext_resource type="Script" uid="uid://c3b4nohhsuiwj" path="res://scripts/seal/seal_symbol.gd" id="1_a87d6"]
+
+[resource]
+script = ExtResource("1_a87d6")
+bitmask = 238
+grid_size = 3
+mirror_type = 5
+pattern_bits = PackedByteArray()
