@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ALEBehavior" load_steps=2 format=3 uid="uid://ip57a7hvi8pl"]
+
+[ext_resource type="Script" uid="uid://bvbo8cl3s4spy" path="res://scripts/resources/ale_behavior.gd" id="1_dnr5w"]
+
+[resource]
+script = ExtResource("1_dnr5w")
+enable_trails_default = true
+trail_turns_default = 7
+base_trail_duration = 2.0
+base_trail_fade = 0.5
+metadata/_custom_type_script = "uid://bvbo8cl3s4spy"

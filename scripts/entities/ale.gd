@@ -4,7 +4,10 @@ extends Node2D
 const DIRECTIONS : Array[Vector2i] = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 
 @onready var sprite : Sprite2D = $Sprite
-@onready var _fallback_definition : ALEdefinition = preload("res://assets/resources/ale_definition.tres")
+#@onready var _fallback_definition : ALEdefinition = preload("res://assets/resources/ale_definition.tres")
+
+## set ALE behavior
+@export var behavior : ALEBehavior # set by ALEManager at spawn
 
 @export var definition : ALEdefinition : set = set_definition   # injected by manager
 @onready var main : Main
@@ -60,6 +63,10 @@ var enable_collision_handling : bool
 var seal_symbol : SEALSymbol
 var ale_id : int = -1
 
+var last_sensed_terrain : int = -1      # used by behaviour
+var trail_turns_left    : int = 0
+
+
 
 # ───────────────────────────────── INITIALIZATION
 func initialize(
@@ -96,24 +103,25 @@ func initialize(
 		get_parent().respawn_ale(self)
 		return
 
-	position        = Vector2(Grid.grid_to_world(grid_pos.x, grid_pos.y, tile_size)) \
-					+ Vector2(tile_size / 2.0, tile_size / 2.0)
+	position= Vector2(Grid.grid_to_world(grid_pos.x, grid_pos.y, tile_size)) \
+				+ Vector2(tile_size / 2.0, tile_size / 2.0)
 
 	## Assign definition (triggers _apply_definition_data)
 	set_definition(def)
 
 	# ─── INIT command log ───
-	#print("ALE %d INITIALIZED at %s" % [ale_id, str(grid_pos)])
 
 	## Pick fixed test command from ALEdefinition
 	var cmds := definition.core_instructions.duplicate()
+	print("cmds ", cmds)
 	# ensure INIT is first, withouth MOVE (speed optimization)
 	phase_pipeline = ["INIT"]
 	for c in cmds:
-		if c != "INIT" and c != "MOVE":
+#		if c != "INIT" and c != "MOVE":
+		if c != "INIT":
 			phase_pipeline.append(c)
 	phase_index = 0
-	## phase_pipeline holds only INIT, SENSE, PROC, COMM, STORE, EVOLVE
+	## phase_pipeline holds only INIT, SENSE, PROC, MEM, MOVE,COMM, EVOLVE
 	## invoke INIT
 	_handle_init()
 	#assigned_command = cmds[randi() % cmds.size()]
@@ -130,9 +138,8 @@ func _ready() -> void:
 		await get_tree().process_frame   # wait until injected into scene
 
 	if definition == null:
-		set_definition(_fallback_definition)
-
-
+		set_definition(definition)
+	print("Phase pipeline: ", phase_pipeline)
 	prev_grid_pos = grid_pos
 	set_process_mode(PROCESS_MODE_PAUSABLE)
 
@@ -347,6 +354,11 @@ func _handle_init() -> void:
 	assigned_archetype = init_data["archetype"]
 	assigned_command   = init_data["command"]
 	seal_symbol = InitConfig.get_init_symbol(assigned_archetype)
+
+	## plug behavior
+	if behavior:
+		behavior.on_init(self)
+
 	# Debug
 	#definition.init_symbol = InitConfig.get_init_symbol(assigned_archetype)
 	print("ALE %d → Team %s, Archetype %s, Command %s, Symbol %s"
@@ -357,9 +369,23 @@ func _handle_init() -> void:
 
 	_has_initialized = true
 
+# -------------------------------------------------------------------
+# Called once per update while phase == SENSE
 func _handle_sense() -> void:
-	# TODO: read environment
-	pass
+	# 1. Read the terrain ID of the tile the ALE is on
+	terrain_id = map.map_data[grid_pos].terrain_type # get terrain id number
+
+	# 2. Forward to the behaviour (if any) so it can decide
+	if behavior:
+		behavior.on_sense(self, terrain_id)
+
+	# 3. (Optional) — add any future perception logic here
+	#
+	#    e.g. scan neighbouring tiles, update local buffers, etc.
+	#
+	# 4. Finally, advance to the next phase in your FSM
+	phase_index += 1        # or whatever your pipeline uses
+
 
 func _handle_proc() -> void:
 	# TODO: process sensed data

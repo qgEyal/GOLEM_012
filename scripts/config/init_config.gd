@@ -45,6 +45,8 @@ const INIT_SYMBOLS: Dictionary = {
 	"Alchemist":  preload("res://assets/resources/symbols/INIT/alchemist.tres"),
 }
 
+
+
 static func _seed_rng() -> void:
 	if not _seeded:
 		_rng.randomize()

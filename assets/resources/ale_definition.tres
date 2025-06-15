@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_piarv")
 seal_grid_size = 3
-core_instructions = ["INIT", "MOVE", "SENSE", "COMM", "PROC", "STORE", "EVOLVE"]
+core_instructions = ["INIT", "SENSE", "PROC", "MEM", "MOVE", "COMM", "EVOLVE"]
 symbol_id = 0
 symmetry_mode = 0
 mutation_rate = 0.6
@@ -15,3 +15,7 @@ min_speed = 0.5
 max_speed = 2.0
 texture = ExtResource("2_w0ohd")
 size = Vector2(16, 16)
+trail_enabled = false
+trail_turns = 7
+trail_duration = 2.0
+trail_fade = 0.5

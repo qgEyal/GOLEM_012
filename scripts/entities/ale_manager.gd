@@ -7,6 +7,11 @@ extends Node
 @export var ale_scene      : PackedScene     # ALE.tscn
 @export var ale_definition : ALEdefinition   # baseline .tres
 
+
+const ARCHETYPE_BEHAVIORS :Dictionary[String, ALEBehavior]= {
+	"Scout": preload("res://assets/resources/behaviors/scout_bhv.tres"),
+	# …
+}
 #const InitConfig = preload("res://scripts/config/init_config.gd")
 
 var rng := RandomNumberGenerator.new()
@@ -112,6 +117,14 @@ func spawn_ales() -> void:
 			enable_collision_handling,
 			seed_symbol
 		)
+		# ─── NEW: attach behaviour **after** initialize so archetype is known ───
+		var arch := ale.assigned_archetype           # set inside ale.initialize()
+		var beh: ALEBehavior= ARCHETYPE_BEHAVIORS.get(arch)
+		if beh:
+			ale.behavior = beh                      # export var in ale.gd
+			beh.on_init(ale)                        # prime per-agent counters
+
+
 
 		ales[ale.name]      = ale
 		occupancy[grid_pos] = ale

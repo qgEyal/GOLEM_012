@@ -26,6 +26,15 @@ var _seal_grid_size : int = 3
 @export var texture : Texture2D
 @export var size    : Vector2 = Vector2(16, 16)
 
+
+# ────────────────────────────────────────────────────────────────────────────
+#  Scout-specific trail settings
+# ────────────────────────────────────────────────────────────────────────────
+@export var trail_enabled  : bool   = false   # master on/off
+@export var trail_turns    : int    = 7       # number of MOVE steps
+@export var trail_duration : float  = 2.0     # seconds until fade
+@export var trail_fade     : float  = 0.5     # fade half-life (s)
+
 # ─────────────────────────────────
 func _set_grid_size(value : int) -> void:
 	_seal_grid_size = clamp(value, 3, 8)
