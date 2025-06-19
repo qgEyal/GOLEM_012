@@ -35,14 +35,14 @@ const ARCHETYPE_COMMAND_BIAS: Dictionary = {
 }
 
 const INIT_SYMBOLS: Dictionary = {
-	"Scout":      preload("res://assets/resources/symbols/INIT/scout.tres"),
-	"Explorer":   preload("res://assets/resources/symbols/INIT/explorer.tres"),
-	"Archivist":  preload("res://assets/resources/symbols/INIT/archivist.tres"),
-	"Scribe":     preload("res://assets/resources/symbols/INIT/scribe.tres"),
-	"Courier":    preload("res://assets/resources/symbols/INIT/courier.tres"),
-	"Glyphweaver":preload("res://assets/resources/symbols/INIT/glyphweaver.tres"),
-	"Sentinel":   preload("res://assets/resources/symbols/INIT/sentinel.tres"),
-	"Alchemist":  preload("res://assets/resources/symbols/INIT/alchemist.tres"),
+	"Scout":      preload("res://assets/resources/commands/INIT/scout.tres"),
+	"Explorer":   preload("res://assets/resources/commands/INIT/explorer.tres"),
+	"Archivist":  preload("res://assets/resources/commands/INIT/archivist.tres"),
+	"Scribe":     preload("res://assets/resources/commands/INIT/scribe.tres"),
+	"Courier":    preload("res://assets/resources/commands/INIT/courier.tres"),
+	"Glyphweaver":preload("res://assets/resources/commands/INIT/glyphweaver.tres"),
+	"Sentinel":   preload("res://assets/resources/commands/INIT/sentinel.tres"),
+	"Alchemist":  preload("res://assets/resources/commands/INIT/alchemist.tres"),
 }
 
 

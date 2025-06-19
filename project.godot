@@ -27,10 +27,6 @@ window/size/viewport_width=1600
 window/size/viewport_height=900
 window/vsync/vsync_mode=0
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/script-ide/plugin.cfg")
-
 [input]
 
 reset={

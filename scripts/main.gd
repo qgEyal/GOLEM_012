@@ -41,6 +41,8 @@ var grid_visible : bool = true               # run‑time toggle
 @export var max_speed : float = 2.0
 @export var stop_turns : int  = 10            # turns to pause after collision
 
+var turn_counter: int = 0
+
 @export_category("Stigmergy")
 @export var trail_duration : float = 5.0
 @export var trail_fade     : float = 3.0
@@ -113,7 +115,11 @@ func _process(delta : float) -> void:
 
 	time_accumulator += delta * simulation_speed
 	if time_accumulator >= 1.0:
-		time_accumulator = 0.0
+		#time_accumulator = 0.0
+		## added this two lines for testing
+		time_accumulator -= 1.0
+		turn_counter += 1
+
 		current_turn += 1
 
 		if max_turns > 0 and current_turn >= max_turns:

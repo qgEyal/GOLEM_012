@@ -20,8 +20,8 @@ enum MirrorType  {
 # Packed bitmask for an N×N grid: lowest bit corresponds to index 0
 @export var bitmask: int
 @export var grid_size : int = 3 : set = _set_grid_size
-@export var mirror_type     : MirrorType   = MirrorType.HORIZONTAL
-@export var pattern_bits    : PackedByteArray   # raw unique-rows as bits
+@export var mirror_type : MirrorType  # = MirrorType.HORIZONTAL
+@export var pattern_bits : PackedByteArray   # raw unique-rows as bits
 ## Lazily-updated cache of the packed 16-bit value used for RGBA encoding
 var _cached_gb : int = -1
 
