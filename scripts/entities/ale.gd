@@ -119,21 +119,12 @@ func initialize(
 
 	# ─── INIT command log ───
 
-	## Pick fixed test command from ALEdefinition
-	#var cmds := definition.core_instructions.duplicate()
-	# ensure INIT is first, withouth MOVE (speed optimization)
-	#phase_pipeline = ["INIT"]
-	#for c in cmds:
-##		if c != "INIT" and c != "MOVE":
-		#if c != "INIT":
-			#phase_pipeline.append(c)
 	phase_pipeline = PHASE_TEMPLATE.duplicate()
 	phase_index = 0
 	## phase_pipeline holds only INIT, SENSE, PROC, MEM, MOVE,COMM, EVOLVE
 	## invoke INIT
 	_handle_init()
-	#assigned_command = cmds[randi() % cmds.size()]
-	#print("ALE %d initialized at: %s. Assigned command %s" % [ale_id, str(grid_pos), assigned_command])
+
 
 
 func set_definition(value : ALEdefinition) -> void:
@@ -198,7 +189,7 @@ func _physics_process(delta: float) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Main per-frame loop
 # ─────────────────────────────────────────────────────────────────────────────
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	#  Make sure the simulation is running
 	if not main or not main.simulation_active:
 		return
@@ -226,7 +217,7 @@ func _process(delta: float) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 func _run_command_pipeline() -> void:
 	if phase_pipeline.is_empty():
-		print("Empty phase")
+		print("Empty phase pipeline.")
 		return
 
 	var cmd : String = phase_pipeline[phase_index]
@@ -298,48 +289,7 @@ func check_collision(new_pos : Vector2i) -> ALE:
 		if child is ALE and child != self and child.grid_pos == new_pos:
 			return child
 	return null
-'''
-func handle_collision(_collision_pos : Vector2i) -> void:
-	state = State.STOPPED
-	sprite.modulate = main.collision_color
-	sprite.scale = Vector2(tile_size / sprite.texture.get_size().x,
-						   tile_size / sprite.texture.get_size().y)
 
-	if not map or not map.is_in_bounds(grid_pos):
-		main.ale_manager.respawn_ale(self)
-		return
-
-	var base_stop_turns := randi_range(5, 15)
-	if map.is_high_energy_zone(grid_pos):
-		stop_turns = base_stop_turns + 5
-	elif map.is_stable_zone(grid_pos):
-		stop_turns = max(3, base_stop_turns - 5)
-	else:
-		stop_turns = base_stop_turns
-
-	stop_timer = stop_turns
-
-	# ──────────────────────────────────────────────────────────────────
-	#Establish collisions and core commands
-	# ──────────────────────────────────────────────────────────────────
-
-	var other := get_colliding_ale(_collision_pos)
-	if other:
-		var msg := "ALE %d collided with ALE %d" % [ale_id, other.ale_id]
-		msg += "\nALE %d initialized on terrain type %s" % [ale_id, initial_terrain_name]
-		msg += "\nALE %d initialized on terrain type %s" % [other.ale_id, other.initial_terrain_name]
-
-		SignalBus.message_sent.emit(msg, main.collision_color)
-	else:
-		var msg := "ALE %d COLLIDED at %s" % [
-			ale_id,
-			str(grid_pos)
-		]
-		SignalBus.message_sent.emit(msg, main.collision_color)
-
-	SignalBus.message_sent.emit("Stopping for: %d turns\n" % stop_turns,
-								main.collision_color)
-'''
 
 ## UPDATED handle_collision
 func handle_collision(_collision_pos : Vector2i) -> void:
@@ -382,12 +332,6 @@ func handle_collision(_collision_pos : Vector2i) -> void:
 		"Stopping for: %d turns\n" % pause_turns,
 		main.collision_color
 	)
-
-
-
-
-
-
 
 func get_colliding_ale(target_pos : Vector2i) -> ALE:
 	for ale in get_parent().get_children():
